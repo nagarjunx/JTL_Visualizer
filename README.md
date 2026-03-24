@@ -2,7 +2,7 @@
 
 A blazing-fast, **100% Client-Side** Progressive Web App (PWA) for analyzing and visualizing JMeter test results (`.jtl`, `.csv`, and `.xml`).
 
-![JTL Visualizer Demo](public/pwa-icon.svg) <!-- Replace with actual screenshot when available -->
+![JTL Visualizer Demo](public/image.png)
 
 🌐 **Live Demo:** [https://nagarjunx.github.io/JTL_Visualizer/](https://nagarjunx.github.io/JTL_Visualizer/)
 
