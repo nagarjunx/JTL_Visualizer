@@ -11,7 +11,7 @@ export default function Footer() {
             JTL Visualizer
           </div>
           <span className="text-outline/30">|</span>
-          <a href="https://github.com/nagarjunx/JTL_Visualizer" target="_blank" rel="noopener noreferrer" className="text-on-surface-variant hover:text-on-surface transition-colors flex items-center gap-1.5 font-medium">
+          <a href="https://github.com/nagarjunx/jtl_visualizer" target="_blank" rel="noopener noreferrer" className="text-on-surface-variant hover:text-on-surface transition-colors flex items-center gap-1.5 font-medium">
             <Github size={14} /> GitHub
           </a>
           <span className="px-2 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded-full text-[10px] font-bold tracking-wider">v2.1.0</span>

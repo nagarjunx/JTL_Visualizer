@@ -41,7 +41,7 @@ export default defineConfig(({mode}) => {
         }
       })
     ],
-    base: '/JTL_Visualizer/', // <--- Essential for GitHub Pages deployed under a subdirectory
+    base: '/jtl_visualizer/', // <--- Essential for GitHub Pages deployed under a subdirectory
     define: {
       'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
     },

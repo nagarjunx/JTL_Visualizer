@@ -2,7 +2,7 @@
 
 A blazing-fast, **100% Client-Side** Progressive Web App (PWA) for analyzing and visualizing JMeter test results (`.jtl`, `.csv`, and `.xml`).
 
-🌐 **Live Demo:** [https://nagarjunx.github.io/JTL_Visualizer/](https://nagarjunx.github.io/JTL_Visualizer/)
+🌐 **Live Demo:** [https://nagarjunx.github.io/jtl_visualizer/](https://nagarjunx.github.io/jtl_visualizer/)
 
 ## 🛡️ Privacy First: 100% Client-Side Processing
 
@@ -40,8 +40,8 @@ To run this project locally:
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/nagarjunx/JTL_Visualizer.git
-   cd JTL_Visualizer
+   git clone https://github.com/nagarjunx/jtl_visualizer.git
+   cd jtl_visualizer
    ```
 
 2. **Install dependencies:**
@@ -60,7 +60,7 @@ To run this project locally:
    ```
 
 ## 🤝 Contributing
-Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/nagarjunx/JTL_Visualizer/issues).
+Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/nagarjunx/jtl_visualizer/issues).
 
 ## 📝 License
 This project is open-source.
