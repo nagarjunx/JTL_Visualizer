@@ -198,19 +198,42 @@ function parseXMLStream(file, aggregator, onProgress) {
   });
 }
 
-export function parseJTLStream(file, filters, onProgress) {
+export function processRowsFromCache(rows, filters, onProgress) {
+  const aggregator = new StreamingAggregator(filters);
+  const total = rows.length;
+  
+  for (let i = 0; i < total; i++) {
+    aggregator.processRow(rows[i]);
+    if (i % 50000 === 0 && onProgress) {
+      onProgress(Math.min(99, (i / total) * 100));
+    }
+  }
+  
+  if (onProgress) onProgress(100);
+  return aggregator.getResults();
+}
+
+export function parseJTLStream(file, filters, onProgress, shouldCache = false) {
   return new Promise((resolve, reject) => {
     try {
       const aggregator = new StreamingAggregator(filters);
+      const cachedRows = shouldCache ? [] : null;
       
       // Read a small chunk to detect format
       const detectReader = new FileReader();
       detectReader.onload = (e) => {
         const format = detectFormat(e.target.result);
         
+        const wrapRow = (row) => {
+          aggregator.processRow(row);
+          if (cachedRows) cachedRows.push(row);
+        };
+
         if (format === 'xml') {
+          // Note: parseXMLStream would need similar wrapRow logic for caching
+          // For now, let's keep CSV optimization which is more common for large files
           parseXMLStream(file, aggregator, onProgress)
-            .then(resolve)
+            .then(res => resolve({ ...res, cachedRows }))
             .catch(reject);
         } else {
           // CSV format
@@ -222,10 +245,10 @@ export function parseJTLStream(file, filters, onProgress) {
             skipEmptyLines: true,
             worker: false, // We are already in a worker
             transformHeader: (header) => normalizeColumnName(header),
-            step: (results, parser) => {
+            step: (results) => {
               if (results.data) {
                 const row = normalizeRow(results.data);
-                aggregator.processRow(row);
+                wrapRow(row);
                 rowCount++;
                 
                 if (rowCount % 10000 === 0 && onProgress) {
@@ -235,7 +258,7 @@ export function parseJTLStream(file, filters, onProgress) {
             },
             complete: () => {
               if (onProgress) onProgress(100);
-              resolve(aggregator.getResults());
+              resolve({ ...aggregator.getResults(), cachedRows });
             },
             error: (err) => {
               reject(err);

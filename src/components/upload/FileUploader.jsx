@@ -6,44 +6,14 @@ import ParserWorker from '../../workers/jtlParser.worker.js?worker';
 import { parseJTL } from '../../lib/parser';
 
 export default function FileUploader() {
-  const { state, dispatch } = useContext(AppContext);
-  const { isParsing, parseProgress, parseError } = state;
+  const { state, dispatch, parseFile } = useContext(AppContext);
+  const { isParsing, theme, parseProgress, parseError } = state; // Keep parseProgress and parseError for the parsing UI
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef(null);
-  const workerRef = useRef(null);
 
   const handleFile = async (file) => {
     if (!file) return;
-
-    dispatch({ type: 'SET_PARSING', payload: true });
-
-    try {
-      if (window.Worker) {
-        workerRef.current = new ParserWorker();
-        workerRef.current.onmessage = (event) => {
-          const { type, value, data, fileName, message } = event.data;
-          if (type === 'progress') dispatch({ type: 'SET_PARSE_PROGRESS', payload: value });
-          else if (type === 'complete') {
-            dispatch({ type: 'SET_RAW_DATA', payload: { data, fileName, file } });
-            workerRef.current.terminate();
-          } else if (type === 'error') {
-            dispatch({ type: 'SET_PARSE_ERROR', payload: message });
-            workerRef.current.terminate();
-          }
-        };
-        workerRef.current.postMessage({ file, fileName: file.name, filters: {} });
-      } else {
-        const reader = new FileReader();
-        reader.onload = async (e) => {
-          try {
-            const rows = await parseJTL(e.target.result, (p) => dispatch({ type: 'SET_PARSE_PROGRESS', payload: p }));
-            dispatch({ type: 'SET_RAW_DATA', payload: { data: rows, fileName: file.name, file } });
-          } catch (err) { dispatch({ type: 'SET_PARSE_ERROR', payload: err.message }); }
-        };
-        reader.onerror = () => dispatch({ type: 'SET_PARSE_ERROR', payload: 'Failed to read file' });
-        reader.readAsText(file);
-      }
-    } catch (err) { dispatch({ type: 'SET_PARSE_ERROR', payload: err.message }); }
+    parseFile(file, file.name, {}, true);
   };
 
   const onDragOver = (e) => { e.preventDefault(); setIsDragging(true); };
@@ -108,7 +78,7 @@ export default function FileUploader() {
         <div className="max-w-[1200px] mx-auto px-6 text-center relative z-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-highest/50 border border-outline-variant/30 text-xs font-semibold text-on-surface-variant mb-8 backdrop-blur-md">
             <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-            v2.0.0 Now Available
+            v2.1.0 Now Available
           </div>
 
           <h1 className="text-5xl md:text-7xl font-black mb-6 tracking-tighter text-on-surface">

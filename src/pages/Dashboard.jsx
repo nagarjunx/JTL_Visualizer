@@ -37,7 +37,7 @@ export default function Dashboard() {
     <div className="min-h-screen flex flex-col bg-background text-on-surface transition-colors duration-200">
       <Header />
       
-      {!hasData || isParsing ? (
+      {!hasData ? (
         <main className="flex-1 w-full">
           <FileUploader />
         </main>
@@ -46,7 +46,7 @@ export default function Dashboard() {
           <TabNav />
           <FilterBar />
           
-          <main className="flex-1 container mx-auto px-4 pb-12">
+          <main className="flex-1 w-full px-8 md:px-12 pb-12">
             <ActiveComponent />
           </main>
           

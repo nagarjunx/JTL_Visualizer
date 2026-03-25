@@ -33,7 +33,7 @@ export default function Header() {
   return (
     <>
       <header className="sticky top-0 w-full z-50 bg-surface/60 backdrop-blur-xl border-b border-outline-variant/30 shadow-2xl shadow-primary/5">
-        <div className="flex justify-between items-center max-w-[1200px] mx-auto px-6 h-16">
+        <div className="flex justify-between items-center w-full px-8 md:px-12 h-16">
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined text-blue-500 text-2xl" style={{ fontVariationSettings: "'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24" }}>bar_chart_4_bars</span>
             <span className="text-on-surface font-bold text-xl tracking-tight">JTL Visualizer</span>
@@ -47,12 +47,14 @@ export default function Header() {
             )}
           </div>
           
-          <nav className="hidden md:flex items-center gap-8 text-sm font-medium font-inter">
-            <a href="#features" className="text-on-surface hover:text-primary transition-colors border border-outline-variant/20 px-3 py-1 rounded-md bg-surface-container-low">Features</a>
-            <a href="#security" className="text-on-surface-variant hover:text-on-surface transition-colors">Security</a>
-            <a href="#documentation" className="text-on-surface-variant hover:text-on-surface transition-colors">Documentation</a>
-            <a href="https://github.com/nagarjunx/JTL_Visualizer" target="_blank" rel="noopener noreferrer" className="text-on-surface-variant hover:text-on-surface transition-colors">GitHub</a>
-          </nav>
+          {!hasData && (
+            <nav className="hidden md:flex items-center gap-8 text-sm font-medium font-inter">
+              <a href="#features" className="text-on-surface hover:text-primary transition-colors border border-outline-variant/20 px-3 py-1 rounded-md bg-surface-container-low">Features</a>
+              <a href="#security" className="text-on-surface-variant hover:text-on-surface transition-colors">Security</a>
+              <a href="#documentation" className="text-on-surface-variant hover:text-on-surface transition-colors">Documentation</a>
+              <a href="https://github.com/nagarjunx/JTL_Visualizer" target="_blank" rel="noopener noreferrer" className="text-on-surface-variant hover:text-on-surface transition-colors">GitHub</a>
+            </nav>
+          )}
           
           <div className="flex items-center gap-6">
             <button

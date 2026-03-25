@@ -120,7 +120,36 @@ export function AppProvider({ children }) {
     }
   }, [state.theme]);
 
-  // Re-parse on filter change
+  // Handle parsing/filtering logic
+  const parseFile = (file, fileName, filters = {}, isInitial = false) => {
+    if (!workerRef.current) {
+      workerRef.current = new ParserWorker();
+      workerRef.current.onmessage = (event) => {
+        const { type: msgType, value, data, message, requestType } = event.data;
+        if (msgType === 'progress') {
+          dispatch({ type: 'SET_PARSE_PROGRESS', payload: value });
+        } else if (msgType === 'complete') {
+          if (requestType === 'parse') {
+            dispatch({ type: 'SET_RAW_DATA', payload: { data, fileName, file } });
+          } else {
+            dispatch({ type: 'SET_FILTERED_DATA', payload: { data } });
+          }
+        } else if (msgType === 'error') {
+          dispatch({ type: 'SET_PARSE_ERROR', payload: message });
+        }
+      };
+    }
+
+    dispatch({ type: 'SET_PARSING', payload: true });
+    workerRef.current.postMessage({ 
+      file, 
+      fileName, 
+      filters, 
+      type: isInitial ? 'parse' : 'filter' 
+    });
+  };
+
+  // Debounced filtering
   useEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false;
@@ -129,45 +158,20 @@ export function AppProvider({ children }) {
 
     if (!state.rawFile) return;
 
-    // Terminate existing worker if running
-    if (workerRef.current) {
+    const timer = setTimeout(() => {
+      parseFile(state.rawFile, state.fileName, state.filters, false);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [state.filters]);
+
+  // Cleanup on unmount or file reset
+  useEffect(() => {
+    if (!state.rawFile && workerRef.current) {
       workerRef.current.terminate();
+      workerRef.current = null;
     }
-
-    dispatch({ type: 'SET_PARSING', payload: true });
-
-    workerRef.current = new ParserWorker();
-    
-    workerRef.current.onmessage = (event) => {
-      const { type, value, data, message } = event.data;
-      
-      if (type === 'progress') {
-        dispatch({ type: 'SET_PARSE_PROGRESS', payload: value });
-      } else if (type === 'complete') {
-        dispatch({ type: 'SET_FILTERED_DATA', payload: { data } });
-        workerRef.current.terminate();
-        workerRef.current = null;
-      } else if (type === 'error') {
-        dispatch({ type: 'SET_PARSE_ERROR', payload: message });
-        if (workerRef.current) {
-          workerRef.current.terminate();
-          workerRef.current = null;
-        }
-      }
-    };
-    
-    workerRef.current.postMessage({ 
-      file: state.rawFile, 
-      fileName: state.fileName, 
-      filters: state.filters 
-    });
-
-    return () => {
-      if (workerRef.current) {
-        workerRef.current.terminate();
-      }
-    };
-  }, [state.filters]); // Only re-run when filters change
+  }, [state.rawFile]);
 
   const toggleTheme = () => {
     dispatch({ type: 'SET_THEME', payload: state.theme === 'dark' ? 'light' : 'dark' });
@@ -182,7 +186,7 @@ export function AppProvider({ children }) {
   };
 
   return (
-    <AppContext.Provider value={{ state, dispatch, toggleTheme, setFilters, resetFilters }}>
+    <AppContext.Provider value={{ state, dispatch, toggleTheme, setFilters, resetFilters, parseFile }}>
       {children}
     </AppContext.Provider>
   );

@@ -113,8 +113,25 @@ export default function FilterBar() {
     filteredData
   } = state;
 
+  const [localSearch, setLocalSearch] = useState(filters.search);
+
+  // Sync local search with global filters (e.g. on reset)
+  useEffect(() => {
+    setLocalSearch(filters.search);
+  }, [filters.search]);
+
+  // Debounce search update to global context
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (localSearch !== filters.search) {
+        setFilters({ search: localSearch });
+      }
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [localSearch]);
+
   const handleSearchChange = (e) => {
-    setFilters({ search: e.target.value });
+    setLocalSearch(e.target.value);
   };
 
   const handleSuccessToggle = (val) => {
@@ -134,7 +151,13 @@ export default function FilterBar() {
 
   return (
     <div className="sticky top-[120px] z-30 mb-6 bg-gray-50/95 dark:bg-gray-950/95 backdrop-blur-md py-3 border-b border-gray-200 dark:border-gray-800">
-      <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
+      {/* Progress Bar for filtering */}
+      {state.isParsing && (
+        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand-500/20 overflow-hidden">
+          <div className="h-full bg-brand-500 animate-[progress_1s_ease-in-out_infinite]" style={{ width: '30%' }}></div>
+        </div>
+      )}
+      <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between w-full px-8 md:px-12">
         
         {/* Search Input */}
         <div className="relative w-full lg:w-64 shrink-0">
@@ -144,13 +167,13 @@ export default function FilterBar() {
           <input
             type="text"
             placeholder="Search requests..."
-            value={filters.search}
+            value={localSearch}
             onChange={handleSearchChange}
             className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg leading-5 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 sm:text-sm transition-colors"
           />
-          {filters.search && (
+          {localSearch && (
             <button
-              onClick={() => setFilters({ search: '' })}
+              onClick={() => setLocalSearch('')}
               className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
             >
               <X size={14} />
