@@ -34,11 +34,11 @@ export default function Dashboard() {
   const ActiveComponent = TAB_COMPONENTS[activeTab] || OverviewTab;
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-950 transition-colors duration-200">
+    <div className="min-h-screen flex flex-col bg-background text-on-surface transition-colors duration-200">
       <Header />
       
       {!hasData || isParsing ? (
-        <main className="flex-1 container mx-auto px-4">
+        <main className="flex-1 w-full">
           <FileUploader />
         </main>
       ) : (

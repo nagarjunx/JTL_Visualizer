@@ -1,28 +1,25 @@
 import React from 'react';
-import { Github, Heart } from 'lucide-react';
+import { Github } from 'lucide-react';
 
 export default function Footer() {
   return (
-    <footer className="w-full bg-white dark:bg-[#090b11] border-t border-gray-200 dark:border-gray-800/50 py-4 px-6 flex flex-col sm:flex-row items-center justify-between text-sm z-20 mt-auto">
-      <div className="flex-1 text-left text-gray-500 dark:text-gray-400">
-        &copy; {new Date().getFullYear()} JMeter Dashboard Visualizer
-      </div>
-
-      <div className="flex-1 text-center flex items-center justify-center gap-1.5 text-gray-500 dark:text-gray-400">
-        Built with <Heart size={14} className="text-pink-500 fill-pink-500" /> by Nagarjuna
-      </div>
-
-      <div className="flex-1 flex justify-end">
-        <a
-          href="https://github.com/nagarjunx"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors font-medium"
-        >
-          <Github size={16} />
-          <span>GitHub</span>
-        </a>
+    <footer className="bg-surface-container-low w-full py-8 border-t border-outline-variant/30 mt-auto">
+      <div className="max-w-[1200px] mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6 text-sm font-inter">
+        <div className="flex items-center gap-4">
+          <div className="text-on-surface font-bold flex items-center gap-2">
+            <span className="material-symbols-outlined text-primary text-lg" style={{ fontVariationSettings: "'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24" }}>bar_chart_4_bars</span>
+            JTL Visualizer
+          </div>
+          <span className="text-outline/30">|</span>
+          <a href="https://github.com/nagarjunx/JTL_Visualizer" target="_blank" rel="noopener noreferrer" className="text-on-surface-variant hover:text-on-surface transition-colors flex items-center gap-1.5 font-medium">
+            <Github size={14} /> GitHub
+          </a>
+        </div>
+        <p className="text-on-surface-variant/60 font-medium">
+          &copy; {new Date().getFullYear()} JTL Visualizer &middot; Built with <span className="text-error/80">❤️</span> by <span className="text-on-surface font-bold">Nagarjuna</span>
+        </p>
       </div>
     </footer>
   );
 }
+

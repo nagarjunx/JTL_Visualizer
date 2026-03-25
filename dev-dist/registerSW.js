@@ -1,1 +1,1 @@
-if('serviceWorker' in navigator) navigator.serviceWorker.register('/dev-sw.js?dev-sw', { scope: '/', type: 'classic' })
+if('serviceWorker' in navigator) navigator.serviceWorker.register('/JTL_Visualizer/dev-sw.js?dev-sw', { scope: '/JTL_Visualizer/', type: 'classic' })
